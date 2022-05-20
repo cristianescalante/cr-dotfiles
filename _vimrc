@@ -22,7 +22,7 @@ else " windows
     set rtp+=%HOME%/.vim/vimfiles/bundle/Vundle.vim/
     set guifont=Inconsolata\ for\ Powerline:h10
     "set guifont=Fira\ Mono\ for\ Powerline:h10
-    set guioptions-=T
+    set guioptions -=T
     set backupdir=%HOME%\vimtemp\
     set directory=%HOME%\vimtemp\
     set undodir=%HOME%\vimtemp
@@ -90,6 +90,8 @@ set diffopt+=vertical
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
 set splitright
+set spell spelllang=pt
+set nospell
 " set shell=C:\bin\cmder\cmder.exe
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
@@ -104,7 +106,6 @@ let mapleader = ","
 " Python
 let python_highlight_all=1
 syntax on
-
 " Python - To add the proper PEP 6 indentation
 au BufNewFile,BufRead *.py
     \ set tabstop=2
@@ -136,7 +137,6 @@ au BufRead,BufNewFile *.py,*.pyw,*.c,*.h syntax match BadWhitespace "/\s\+$/"
 "     function! s:PathComplete(ArgLead, CmdLine, CursorPos)
 "       return UserFileComplete(a:ArgLead, a:CmdLine, a:CursorPos, 1, &path)
 "     endfunction
-
 
 " Split navigations (torna o W desnecessário)
 nnoremap <C-J> <C-W><C-J>
@@ -198,9 +198,6 @@ Plugin 'nvie/vim-flake8'
 
 Plugin 'tpope/vim-surround'                 " git wrapper
 Plugin 'itchyny/lightline.vim'
-" Plugin 'vim-airline/vim-airline'
-" Plugin 'vim-airline/vim-airline-themes'
-" Plugin 'bling/vim-bufferline'
 " Plugin 'terryma/vim-multiple-cursors'
 " Plugin 'neilagabriel/vim-geeknote'
 " Plugin 'fholgado/minibufexpl.vim'
@@ -239,6 +236,9 @@ Plugin 'tpope/vim-abolish'
 " Light & Dark color schemes for terminal and graphic Inspired by Google's Material Design 
 Plugin 'NLKNguyen/papercolor-theme'
 
+" Registradores
+" https://github.com/junegunn/vim-peekaboo
+Plugin 'junegunn/vim-peekaboo'
 " Navegação de arquivos
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
@@ -337,6 +337,18 @@ endif
 call togglebg#map("<F5>")
 
 syntax enable
+
+
+" Destaca uma ou mais linhas e mantém destacada
+" define line highlight color
+" highlight LineHighlight ctermbg=darkgray guibg=darkgray
+highlight LineHighlight ctermbg=LightCyan guibg=#2C78BF
+" highlight the current line
+nnoremap <silent> <leader>l :call matchadd('LineHighlight', '\%'.line('.').'l')<CR>
+nnoremap <silent> <leader>c :call clearmatches()<CR>
+
+
+" ---------------------------------------------------------------------------------
 " let g:solarized_termcolors=256
 " colorscheme ron
 " colorscheme solarized
@@ -355,6 +367,7 @@ syntax enable
 " colorscheme night-owl.vim "haishanh/night-owl.vim
 
 
+" ---------------------------------------------------------------------------------
 " To ignore plugin indent changes, instead use:
 "filetype plugin on
 "
@@ -372,60 +385,9 @@ syntax enable
 " =========================================
 "
 
-" Substituido pelo Lighline
-" Airline
-" let g:airline_section_b = '%{strftime("%c")}'
-" let g:airline#extensions#tabline#enabled = 1
-" let g:airline#extensions#tabline#formatter = 'unique_tail'
-"  let g:airline_powerline_fonts = 1
-"  let g:Powerline_symbols = 'unicode' 
-"  " let g:airline_theme='base16'
-"  let g:airline_theme='wombat'
-"  
-"  if !exists('g:airline_symbols')
-"    let g:airline_symbols = {}
-"  endif
-"  
-" unicode symbols
-" let g:airline_left_sep = '»'
-" let g:airline_left_sep = '▶'
-" let g:airline_right_sep = '«'
-" let g:airline_right_sep = '◀'
-" let g:airline_symbols.crypt = '🔒'
-" let g:airline_symbols.linenr = '☰'
-" let g:airline_symbols.linenr = '␊'
-" let g:airline_symbols.linenr = '␤'
-" let g:airline_symbols.linenr = '¶'
-" let g:airline_symbols.maxlinenr = ''
-" let g:airline_symbols.maxlinenr = '㏑'
-" let g:airline_symbols.branch = '⎇'
-" let g:airline_symbols.paste = 'ρ'
-" let g:airline_symbols.paste = 'Þ'
-" let g:airline_symbols.paste = '∥'
-" let g:airline_symbols.spell = 'Ꞩ'
-" let g:airline_symbols.notexists = 'Ɇ'
-" let g:airline_symbols.whitespace = 'Ξ'
-"  
-"  " powerline symbols
-"  let g:airline_left_sep = ''
-"  let g:airline_left_alt_sep = ''
-"  let g:airline_right_sep = ''
-"  let g:airline_right_alt_sep = ''
-"  let g:airline_symbols.branch = ''
-"  let g:airline_symbols.readonly = ''
-"  let g:airline_symbols.linenr = '☰'
-"  let g:airline_symbols.maxlinenr = ''
-"  let g:airline_symbols.dirty='⚡'
 
-" " BufferLine
-" let g:bufferline_active_buffer_left = '['
-" let g:bufferline_active_buffer_right = ']'
-" let g:bufferline_inactive_highlight = 'StatusLineNC'
-
-
-
-
-" Syntastic ------------------------------
+" ---------------------------------------------------------------------------------
+" Syntastic 
 
 " show list of errors and warnings on the current file
 nmap <leader>e :Errors<CR>
@@ -450,6 +412,7 @@ let g:syntastic_style_error_symbol = '✗'
 let g:syntastic_style_warning_symbol = '⚠'
 
 
+" ---------------------------------------------------------------------------------
 " Markdown 
 set conceallevel=2
 " Latex
@@ -464,13 +427,15 @@ let g:vim_markdown_math = 1
 " Gera o item pai (H1)
 let g:mdtoc_starting_header_level = 1
 
-" Crtl P ---------------------------------
+" ---------------------------------------------------------------------------------
+" Crtl P 
 
 map <C-b> :CtrlPBuffer<CR>
 
 if executable('rg')
   let g:ctrlp_user_command = 'rg %s --files --hidden --color=never --glob ""'
 endif
+
 
 "  " Set no max file limit
 "  let g:ctrlp_max_files = 0
@@ -492,7 +457,14 @@ set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
 
 
 
+" --------------------------------------------------------------------------------- 
+" Peekaboo - Mostra o conteúdo dos registradores
+" let g:peekaboo_window vert bo 50new
+let g:peekaboo_delay=5
+let g:peekaboo_window="vert bo 50new"
 
+
+" ---------------------------------------------------------------------------------
 " fu! VimSQL()
 "     nnoremap <C-K> :<C-U> exe "let linenum=".v:count<CR>:1,$-1d<CR><C-W>j:exe linenum."y"<CR><C-W>kP
 "     let linenum=line("$")
@@ -515,4 +487,5 @@ set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
 "  In a nutshell, nnoremap remaps one key combination to another. 
 "  The no part means remap the key in normal mode as opposed to visual mode. 
 "  Basically, nnoremap <C-J> <C-W><C-j> says, in normal mode when I hit <C-J>, do <C-W><C-j> instead.
+
 
